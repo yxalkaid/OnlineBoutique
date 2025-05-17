@@ -6,6 +6,9 @@ plugins {
 }
 
 repositories {
+
+    // 设置maven镜像源
+    maven { url 'https://maven.aliyun.com/repository/public' }
     mavenCentral()
     mavenLocal()
 }

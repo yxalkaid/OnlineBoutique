@@ -16,6 +16,10 @@ FROM python:3.12.6-slim@sha256:ad48727987b259854d52241fac3bc633574364867b8e20aec
 
 FROM base AS builder
 
+# 替换为阿里云源
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources \
+    && sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources
+
 RUN apt-get -qq update \
     && apt-get install -y --no-install-recommends \
         wget g++ \

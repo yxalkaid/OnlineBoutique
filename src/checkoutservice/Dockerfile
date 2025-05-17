@@ -16,6 +16,8 @@ FROM golang:1.23.1-alpine@sha256:ac67716dd016429be8d4c2c53a248d7bcdf06d34127d3dc
 WORKDIR /src
 
 # restore dependencies
+# 设置代理
+ENV GOPROXY=https://goproxy.cn,direct
 COPY go.mod go.sum ./
 RUN go mod download
 
