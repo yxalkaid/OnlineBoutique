@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: emailservice_re
+
+  mail:
+    host: smtp.163.com      # 163邮箱SMTP服务器地址
+    port: 587              # TLS端口
+    username: ${EMAIL_USERNAME}  # 从环境变量获取用户名
+    password: ${EMAIL_PASSWORD}  # 从环境变量获取密码
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+server:
+  port: 8081
+
+grpc:
+  server:
+    port: 8080
