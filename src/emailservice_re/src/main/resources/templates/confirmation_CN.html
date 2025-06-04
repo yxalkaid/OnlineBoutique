@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Your Order Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  </head>
+  <style>
+    body {
+      font-family: 'DM Sans', sans-serif;
+    }
+  </style>
+  <body>
+    <h2>您的订单确认</h2>
+    <p>感谢您在我们这里购物！</p>
+
+    <!-- Order ID -->
+    <h3>订单ID</h3>
+    <p>#<span th:text="${order.orderId}"></span></p> 
+
+    <!-- Shipping Tracking ID -->
+    <h3>物流信息</h3>
+    <p>#<span th:text="${order.shippingTrackingId}"></span></p>
+
+    <!-- Shipping Cost -->
+    <p>
+      <span th:text="${order.shippingCost.units}"></span>.
+      <span th:text="${#strings.format('%02d', order.shippingCost.nanos / 10000000)}"></span>
+      <span th:text="${order.shippingCost.currencyCode}"></span>
+    </p>
+
+    <!-- Shipping Address -->
+    <p>
+      <span th:text="${order.shippingAddress.streetAddress1}"></span>,
+      <span th:text="${order.shippingAddress.streetAddress2}"></span>,
+      <span th:text="${order.shippingAddress.city}"></span>,
+      <span th:text="${order.shippingAddress.country}"></span>
+      <span th:text="${order.shippingAddress.zipCode}"></span>
+    </p>
+
+    <!-- Items Table -->
+    <h3>Items</h3>
+    <table style="width:100%">
+      <tr>
+        <th>商品编号</th>
+        <th>数量</th>
+        <th>价格</th>
+      </tr>
+      <tr th:each="item : ${order.items}">
+        <td>#<span th:text="${item.item.productId}"></span></td>
+        <td><span th:text="${item.item.quantity}"></span></td>
+        <td>
+          <span th:text="${item.cost.units}"></span>.
+          <span th:text="${#strings.format('%02d', item.cost.nanos / 10000000)}"></span>
+          <span th:text="${item.cost.currencyCode}"></span>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

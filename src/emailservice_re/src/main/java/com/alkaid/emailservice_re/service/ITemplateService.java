@@ -9,5 +9,5 @@ public interface ITemplateService {
      * @param order
      * @return
      */
-    public String renderEmail(String templateName, String email,String order);
+    public String renderEmail(String templateName, String email,Object order);
 }

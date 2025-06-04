@@ -14,7 +14,8 @@ public class TemplateServiceImpl implements ITemplateService {
     private TemplateEngine templateEngine;
 
     @Override
-    public String renderEmail(String templateName, String email, String order) {
+    public String renderEmail(String templateName, String email, Object order) {
+
         Context context = new Context();
         context.setVariable("email", email);
         context.setVariable("order", order);
