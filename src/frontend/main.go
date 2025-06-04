@@ -47,6 +47,7 @@ const (
 var (
 	whitelistedCurrencies = map[string]bool{
 		"USD": true,
+		"CNY": true, // 添加CNY选项
 		"EUR": true,
 		"CAD": true,
 		"JPY": true,

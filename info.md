@@ -24,7 +24,7 @@
 - **Node.js**：使用 `node` 镜像进行构建，并将依赖项复制到轻量级的 `alpine` 镜像中。
 - **Python**：使用 `python` 镜像作为基础镜像。
 
-## tips
+## 部署
 
 1. 下载skaffold二进制文件
 
@@ -55,4 +55,30 @@
     ```
     RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources \
     && sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources
+    ```
+
+## Istio
+1. 安装istio
+    从`https://github.com/istio/istio`下载发行版
+    ```
+    istioctl install --set profile=demo
+    ```
+2. 创建命名空间`online-boutique`，启用Istio自动Sidecar注入
+    ```
+    kubectl create namespace online-boutique
+    kubectl label namespace online-boutique istio-injection=enabled
+    ```
+
+3. 部署项目到命名空间`online-boutique`中，并进行istio配置
+    ```
+    skaffold run -n online-boutique
+    kubectl apply -f ./istio-manifests -n online-boutique
+    ```
+
+4. 配置
+    ```
+    kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\kiali.yaml"
+    kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\jaeger.yaml"
+    kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\prometheus.yaml"
+    kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\grafana.yaml"
     ```
