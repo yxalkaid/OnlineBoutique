@@ -4,15 +4,17 @@ spring:
 
   mail:
     host: smtp.163.com      # 163邮箱SMTP服务器地址
-    port: 587              # TLS端口
-    username: ${EMAIL_USERNAME}  # 从环境变量获取用户名
-    password: ${EMAIL_PASSWORD}  # 从环境变量获取密码
+    port: 465              # SSL端口
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
     protocol: smtp
     properties:
       mail:
         smtp:
           auth: true
           starttls:
+            enable: true
+          ssl:
             enable: true
           connectiontimeout: 5000
           timeout: 5000
@@ -24,8 +26,8 @@ spring:
     cache: false
 
 server:
-  port: 8081
+  port: 8080
 
 grpc:
   server:
-    port: 8080
+    port: 9090

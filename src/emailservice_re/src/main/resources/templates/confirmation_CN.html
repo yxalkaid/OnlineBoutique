@@ -24,15 +24,15 @@
     <!-- Shipping Cost -->
     <p>
       <span th:text="${order.shippingCost.units}"></span>.
-      <span th:text="${#strings.format('%02d', order.shippingCost.nanos / 10000000)}"></span>
+      <span th:text="${#numbers.formatInteger(order.shippingCost.nanos / 10000000, 2, 'COMMA')}"></span>
       <span th:text="${order.shippingCost.currencyCode}"></span>
     </p>
 
     <!-- Shipping Address -->
     <p>
-      <span th:text="${order.shippingAddress.streetAddress1}"></span>,
-      <span th:text="${order.shippingAddress.streetAddress2}"></span>,
+      <span th:text="${order.shippingAddress.streetAddress}"></span>,
       <span th:text="${order.shippingAddress.city}"></span>,
+      <span th:text="${order.shippingAddress.state}"></span>,
       <span th:text="${order.shippingAddress.country}"></span>
       <span th:text="${order.shippingAddress.zipCode}"></span>
     </p>
@@ -45,12 +45,12 @@
         <th>数量</th>
         <th>价格</th>
       </tr>
-      <tr th:each="item : ${order.items}">
+      <tr th:each="item : ${order.itemsList}">
         <td>#<span th:text="${item.item.productId}"></span></td>
         <td><span th:text="${item.item.quantity}"></span></td>
         <td>
           <span th:text="${item.cost.units}"></span>.
-          <span th:text="${#strings.format('%02d', item.cost.nanos / 10000000)}"></span>
+          <span th:text="${#numbers.formatInteger(item.cost.nanos / 10000000, 2, 'COMMA')}"></span>
           <span th:text="${item.cost.currencyCode}"></span>
         </td>
       </tr>
