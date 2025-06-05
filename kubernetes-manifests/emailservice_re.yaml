@@ -42,13 +42,13 @@ spec:
             drop:
               - ALL
           privileged: false
-          readOnlyRootFilesystem: true
-        image: emailservice_re # 修改为新的镜像名称
+          readOnlyRootFilesystem: false # 修改为false
+        image: emailservice_re # 修改镜像名称
         ports:
-        - containerPort: 8080 # 修改为新的端口号
+        - containerPort: 9090 # 修改端口号
         env:
         - name: PORT
-          value: "8080"
+          value: "9090" # 修改端口号
         - name: DISABLE_PROFILER
           value: "1"
         - name: EMAIL_USERNAME  # 新增：邮箱用户名
@@ -62,20 +62,22 @@ spec:
               name: email-secret
               key: password
         readinessProbe:
-          periodSeconds: 5
+          initialDelaySeconds: 30 # 设置初始延迟时间
+          periodSeconds: 15 # 设置检查间隔时间
           grpc:
-            port: 8080
+            port: 9090 # 修改端口号
         livenessProbe:
-          periodSeconds: 5
+          initialDelaySeconds: 30 # 设置初始延迟时间
+          periodSeconds: 15 # 设置检查间隔时间
           grpc:
-            port: 8080
+            port: 9090 # 修改端口号
         resources:
           requests:
-            cpu: 100m
-            memory: 64Mi
-          limits:
             cpu: 200m
             memory: 128Mi
+          limits:
+            cpu: 400m # 修改CPU限制
+            memory: 384Mi # 修改内存限制
 ---
 apiVersion: v1
 kind: Service
@@ -90,7 +92,7 @@ spec:
   ports:
   - name: grpc
     port: 5000
-    targetPort: 8080
+    targetPort: 9090 # 修改端口号
 ---
 apiVersion: v1
 kind: ServiceAccount

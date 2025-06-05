@@ -60,25 +60,60 @@
 ## Istio
 1. 安装istio
     从`https://github.com/istio/istio`下载发行版
-    ```
+    ```bash
     istioctl install --set profile=demo
     ```
 2. 创建命名空间`online-boutique`，启用Istio自动Sidecar注入
-    ```
+    ```bash
     kubectl create namespace online-boutique
     kubectl label namespace online-boutique istio-injection=enabled
     ```
 
 3. 部署项目到命名空间`online-boutique`中，并进行istio配置
-    ```
+    ```bash
     skaffold run -n online-boutique
     kubectl apply -f ./istio-manifests -n online-boutique
     ```
 
 4. 配置
-    ```
+    ```bash
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\kiali.yaml"
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\jaeger.yaml"
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\prometheus.yaml"
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\grafana.yaml"
     ```
+
+## EmailService_Re
+```bash
+kubectl create secret generic <secret-name> \
+  --from-literal=username=<value1> \
+  --from-literal=password=<value2> -n online-boutique
+```
+
+## tips
+1. emailservice_re内存资源限制过小，频繁出现OOM并重启
+    ```yaml
+    resources:
+    requests:
+        cpu: 200m
+        memory: 128Mi
+    limits:
+        cpu: 400m
+        memory: 256Mi
+    ```
+
+2. emailservice_re健康检测初始延迟设置过短，导致健康检查误判而重启。
+    ```yaml
+    readinessProbe:
+          initialDelaySeconds: 30 # 设置初始延迟时间
+          periodSeconds: 15 # 设置检查间隔时间
+          grpc:
+            port: 9090
+    livenessProbe:
+        initialDelaySeconds: 30 # 设置初始延迟时间
+        periodSeconds: 15 # 设置检查间隔时间
+        grpc:
+        port: 9090
+    ```
+
+3. 邮件模板文件中的变量名需要匹配对应语言中的类属性名
