@@ -35,7 +35,10 @@ public class EmailService extends EmailServiceImplBase {
      * 发送订单确认邮件
      */
     @Override
-    public void sendOrderConfirmation(SendOrderConfirmationRequest request, StreamObserver<Empty> responseObserver) {
+    public void sendOrderConfirmation(
+        SendOrderConfirmationRequest request, 
+        StreamObserver<Empty> responseObserver
+    ) {
 
         String email = request.getEmail();
         String subject="Order Confirmation";

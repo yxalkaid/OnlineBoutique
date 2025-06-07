@@ -81,9 +81,12 @@
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\jaeger.yaml"
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\prometheus.yaml"
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\grafana.yaml"
+
+    kubectl apply -f "./istio-manifests/mesh-default.yaml"
     ```
 
 ## EmailService_Re
+1. 创建secret
 ```bash
 kubectl create secret generic <secret-name> \
   --from-literal=username=<value1> \

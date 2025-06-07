@@ -11,7 +11,8 @@ FROM eclipse-temurin:21.0.4_7-jre-alpine@sha256:8cc1202a100e72f6e91bf05ab274b373
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
+# 暴露gRPC端口
 EXPOSE 9090
 
-# 启动应用
+# 启动容器
 ENTRYPOINT ["java", "-jar", "app.jar"]

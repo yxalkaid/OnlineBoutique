@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: ingress-rate-limits
+  namespace: istio-system # 命名空间
+spec:
+  workloadSelector:
+    labels:
+      app: istio-ingressgateway  # 作用于ingressgateway
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        portNumber: 80
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.local_ratelimit
+        typed_config:
+          "@type": type.googleapis.com/udpa.type.v1.TypedStruct
+          type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
+          value:
+            stat_prefix: http_local_rate_limiter
+            token_bucket:
+              max_tokens: 10        # 令牌桶容量
+              tokens_per_fill: 1    # 每次填充令牌数
+              fill_interval: 1s     # 填充间隔
+            filter_enabled:
+              default_value:
+                numerator: 100     # 100%启用
+                denominator: HUNDRED
+            filter_enforced:
+              default_value:
+                numerator: 100     # 100%强制执行
+                denominator: HUNDRED
+            response_headers_to_add:
+              - header:
+                  key: x-ratelimit-limited
+                  value: "true"
+                append: false
