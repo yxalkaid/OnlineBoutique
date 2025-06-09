@@ -6,13 +6,12 @@ metadata:
 spec:
   workloadSelector:
     labels:
-      app: istio-ingressgateway  # 作用于ingressgateway
+      istio: ingressgateway  # 作用于ingressgateway
   configPatches:
   - applyTo: HTTP_FILTER
     match:
       context: GATEWAY
       listener:
-        portNumber: 80
         filterChain:
           filter:
             name: "envoy.filters.network.http_connection_manager"
@@ -27,8 +26,8 @@ spec:
             stat_prefix: http_local_rate_limiter
             token_bucket:
               max_tokens: 10        # 令牌桶容量
-              tokens_per_fill: 1    # 每次填充令牌数
-              fill_interval: 1s     # 填充间隔
+              tokens_per_fill: 10    # 每次填充令牌数
+              fill_interval: 60s     # 填充间隔
             filter_enabled:
               default_value:
                 numerator: 100     # 100%启用
