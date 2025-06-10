@@ -69,26 +69,27 @@
     kubectl label namespace online-boutique istio-injection=enabled
     ```
 
-3. 部署项目到命名空间`online-boutique`中，并进行istio配置
+3. 部署项目到命名空间`online-boutique`中，并进行ingressgateway配置
     ```bash
     skaffold run -n online-boutique
-    kubectl apply -f ./istio-manifests -n online-boutique
+    kubectl apply -f ./istio-manifests/frontend-gateway.yaml -n online-boutique
     ```
 
-4. 配置
+4. 配置可观测性组件
     ```bash
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\kiali.yaml"
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\jaeger.yaml"
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\prometheus.yaml"
     kubectl apply -f "D:\Downloads\istio-1.26.1\samples\addons\grafana.yaml"
 
+    # 配置遥测追踪
     kubectl apply -f "./istio-manifests/mesh-default.yaml"
     ```
 
 ## EmailService_Re
 1. 创建secret
 ```bash
-kubectl create secret generic <secret-name> \
+kubectl create secret generic email-secret \
   --from-literal=username=<value1> \
   --from-literal=password=<value2> -n online-boutique
 ```
