@@ -1,6 +1,9 @@
+<font face="楷体">
+
+[TOC]
+
 # Info
 
-## 服务
 ## 服务列表
 | 服务名称                  | 使用的语言       | 依赖的镜像                                                                 |
 |---------------------------|------------------|----------------------------------------------------------------------------|
@@ -24,7 +27,7 @@
 - **Node.js**：使用 `node` 镜像进行构建，并将依赖项复制到轻量级的 `alpine` 镜像中。
 - **Python**：使用 `python` 镜像作为基础镜像。
 
-## 部署
+## 项目部署
 
 1. 下载skaffold二进制文件
 
@@ -57,13 +60,16 @@
     && sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources
     ```
 
-## Istio
+7. 运行`skaffold run`命令构建并部署项目
+
+## Istio配置
 1. 安装istio
     从`https://github.com/istio/istio`下载发行版
     ```bash
-    istioctl install --set profile=demo
+    # 安装istio并指定采样率
+    istioctl install --set profile=demo --set meshConfig.defaultConfig.tracing.sampling=10
     ```
-2. 创建命名空间`online-boutique`，启用Istio自动Sidecar注入
+2. 创建命名空间`online-boutique`，启用Istio的自动Sidecar注入
     ```bash
     kubectl create namespace online-boutique
     kubectl label namespace online-boutique istio-injection=enabled
@@ -86,13 +92,32 @@
     kubectl apply -f "./istio-manifests/mesh-default.yaml"
     ```
 
-## EmailService_Re
-1. 创建secret
-```bash
-kubectl create secret generic email-secret \
-  --from-literal=username=<value1> \
-  --from-literal=password=<value2> -n online-boutique
-```
+## EmailService_Re部署
+1. 创建secret，设置username和password
+    ```bash
+    kubectl create secret generic email-secret \
+    --from-literal=username=<value1> \
+    --from-literal=password=<value2> -n online-boutique
+    ```
+
+2. 修改skaffold.yaml，指定镜像构建路径
+    ```yaml
+    build:
+        artifacts:
+        - image: emailservice_re
+            context: src/emailservice_re
+    ```
+
+3. 创建kubernetes-manifests/emailservice_re.yaml
+
+4. 在kubernetes-manifests/kustomization.yaml中启用emailservice_re
+    ```yaml
+    resources:
+    #  - emailservice.yaml
+    - emailservice_re.yaml
+    ```
+
+5. 重新构建并部署项目
 
 ## tips
 1. emailservice_re内存资源限制过小，频繁出现OOM并重启
@@ -121,3 +146,17 @@ kubectl create secret generic email-secret \
     ```
 
 3. 邮件模板文件中的变量名需要匹配对应语言中的类属性名
+
+## 主要改动
+- 代理或镜像源配设置
+    - 各微服务的Dockerfile文件。例如：src/checkoutservice/Dockerfile
+    - src/adservice/gradle/wrapper/gradle-wrapper.properties
+    - src/adservice/build.gradle
+- emailservice_re源代码：src/emailservice_re
+- emailservice_re部署：
+    - skaffold.yaml
+    - kubernetes-manifests/kustomization.yaml
+    - kubernetes-manifests/emailservice_re.yaml
+- 遥测追踪配置：istio-manifests/mesh-default.yaml
+- 限流配置：istio-manifests/ingress-rate-limits.yaml
+- 项目相关信息：info.md
